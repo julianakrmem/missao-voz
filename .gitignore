@@ -1,0 +1,6 @@
+node_modules
+dist
+*.local
+
+# Temas pessoais (ex.: personagens com direitos autorais) ficam só na sua máquina
+src/themes/local/

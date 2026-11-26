@@ -1,0 +1,617 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  height: 100%;
+  color: var(--text);
+  background: radial-gradient(circle at 70% 20%, var(--bg-accent), var(--bg) 70%);
+}
+
+.screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Início ---------- */
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4vmin;
+}
+
+.home__hero {
+  width: min(36vmin, 260px);
+  animation: bounce 2.4s ease-in-out infinite;
+}
+
+.big-play {
+  width: min(30vmin, 220px);
+  height: min(30vmin, 220px);
+  border-radius: 50%;
+  border: none;
+  background: var(--power);
+  color: var(--bg);
+  font-size: min(13vmin, 96px);
+  padding-left: 0.15em;
+  box-shadow: 0 1.2vmin 0 rgba(0, 0, 0, 0.25), 0 0 0 2vmin rgba(255, 255, 255, 0.12);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+.big-play:active {
+  transform: translateY(1vmin) scale(0.97);
+}
+
+.big-play--home {
+  padding-left: 0;
+  font-size: min(12vmin, 80px);
+}
+
+.adult-note {
+  max-width: 34rem;
+  margin: 0 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ---------- Botões de segurar (pais / sair) ---------- */
+.corner {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  z-index: 5;
+}
+.corner--right {
+  right: 12px;
+}
+.corner--left {
+  left: 12px;
+}
+
+.hold {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 1.6rem;
+  opacity: 0.6;
+}
+
+.hold__ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(var(--power) var(--p, 0%), transparent 0);
+  -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%);
+  mask: radial-gradient(circle, transparent 60%, #000 61%);
+}
+
+.hold--active {
+  opacity: 1;
+}
+
+.hold--active .hold__ring {
+  animation: fill-ring var(--hold-ms) linear forwards;
+}
+
+@property --p {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@keyframes fill-ring {
+  to {
+    --p: 100%;
+  }
+}
+
+/* ---------- Missão ---------- */
+.mission__hero {
+  position: absolute;
+  left: 4vw;
+  bottom: 2vh;
+  width: min(34vmin, 260px);
+}
+
+.mission__hero .hero {
+  position: relative;
+  z-index: 2;
+}
+
+.voice-glow {
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--power) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.08s linear;
+  z-index: 1;
+}
+
+.voice-glow--on {
+  opacity: 0.8;
+}
+
+.mission__target {
+  position: absolute;
+  right: 5vw;
+  top: 10vh;
+  width: min(40vmin, 320px);
+  border: none;
+  background: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mission__target .target {
+  width: 100%;
+  animation: wobble 2.2s ease-in-out infinite;
+}
+
+.mission__target .target--caught {
+  animation: happy-pop 0.6s ease-out;
+}
+
+.mission__emoji {
+  font-size: min(16vmin, 120px);
+  line-height: 1;
+  margin-top: -2vmin;
+}
+
+.mission__word {
+  margin-top: 1vmin;
+  font-size: min(5vmin, 32px);
+  font-weight: 800;
+  opacity: 0.85;
+}
+
+.beam {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.beam__line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: shoot 0.45s ease-out forwards;
+  filter: drop-shadow(0 0 6px var(--power));
+}
+
+.mission--caught .beam__line {
+  animation: shoot 0.45s ease-out forwards, fade 0.6s 0.4s forwards;
+}
+
+.beam__line--web {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.4));
+}
+
+.mission__target {
+  isolation: isolate;
+}
+
+.web-net {
+  position: absolute;
+  left: 5%;
+  top: -5%;
+  width: 90%;
+  z-index: 2;
+  animation: grow 0.35s ease-out;
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 3px rgba(0, 0, 0, 0.6));
+}
+
+/* Imagens de tema local */
+img.hero,
+img.target {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.power-word {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  font-size: min(14vmin, 100px);
+  font-weight: 900;
+  color: var(--power);
+  text-shadow: 0 0.6vmin 0 rgba(0, 0, 0, 0.3);
+  animation: pop-in 0.4s ease-out;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.progress {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  font-size: 1.8rem;
+}
+
+.progress span {
+  filter: grayscale(1) opacity(0.35);
+  transition: filter 0.4s;
+}
+
+.progress .progress__done {
+  filter: none;
+}
+
+/* Botão do adulto: pequeno, discreto, canto inferior direito */
+.adult-mark {
+  position: absolute;
+  right: 12px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  font-size: 1.3rem;
+  opacity: 0.45;
+  z-index: 5;
+}
+
+.adult-mark:disabled {
+  opacity: 0.15;
+}
+
+.adult-mark--on {
+  background: #5ad17a;
+  border-color: #5ad17a;
+  opacity: 1;
+}
+
+/* Humor do herói */
+.hero--listening {
+  animation: lean 1.2s ease-in-out infinite;
+}
+.hero--firing {
+  animation: recoil 0.4s ease-out;
+}
+.hero--happy {
+  animation: jump 0.6s ease-out 2;
+}
+.hero--encourage {
+  animation: wave 1s ease-in-out infinite;
+}
+.hero__arm {
+  transition: transform 0.2s;
+}
+
+/* ---------- Fim ---------- */
+.done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3vmin;
+}
+
+.done__hero {
+  width: min(30vmin, 220px);
+}
+
+.done__score {
+  font-size: min(10vmin, 64px);
+  letter-spacing: 0.1em;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.stars__item {
+  position: absolute;
+  top: -10%;
+  animation: fall 2.2s ease-in forwards;
+}
+
+/* ---------- Painel dos pais ---------- */
+.panel {
+  overflow-y: auto;
+  padding: max(16px, env(safe-area-inset-top)) 16px 48px;
+  user-select: text;
+  -webkit-user-select: text;
+  background: #f5f6fb;
+  color: #1d2340;
+  font-size: 1rem;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 760px;
+  margin: 0 auto 1rem;
+}
+
+.panel h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.panel h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.6rem;
+}
+
+.card {
+  max-width: 760px;
+  margin: 0 auto 1rem;
+  padding: 1rem 1.2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(29, 35, 64, 0.08);
+}
+
+.btn {
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #c9cee3;
+  background: #fff;
+  color: #1d2340;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+}
+
+.btn--primary {
+  background: #2c3e78;
+  border-color: #2c3e78;
+  color: #fff;
+}
+
+.btn--recording {
+  background: #e5484d;
+  border-color: #e5484d;
+  color: #fff;
+  animation: pulse 1s infinite;
+}
+
+.btn--danger {
+  color: #c62f35;
+  border-color: #f0b8ba;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0.8rem 0;
+  font-weight: 600;
+}
+
+.field select,
+.field input[type='range'] {
+  font: inherit;
+  padding: 0.4rem;
+}
+
+.field--check {
+  flex-direction: row;
+  align-items: center;
+  font-weight: 400;
+}
+
+.hint {
+  margin: 0.4rem 0;
+  color: #5b6180;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #c62f35;
+}
+
+.meter {
+  position: relative;
+  height: 22px;
+  border-radius: 11px;
+  background: #e4e7f2;
+  overflow: hidden;
+}
+
+.meter__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2bb3a3, #ffd84d);
+  transition: width 0.06s linear;
+}
+
+.meter__threshold {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 40%;
+  width: 3px;
+  background: #2c3e78;
+}
+
+.rec-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+
+.rec-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #eef0f7;
+}
+
+.rec-list li span {
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+
+.progress-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.progress-table th,
+.progress-table td {
+  text-align: left;
+  padding: 0.4rem;
+  border-bottom: 1px solid #eef0f7;
+}
+
+/* ---------- Animações ---------- */
+@keyframes bounce {
+  50% {
+    transform: translateY(-3vmin);
+  }
+}
+@keyframes pulse {
+  50% {
+    transform: scale(1.05);
+  }
+}
+@keyframes wobble {
+  25% {
+    transform: rotate(-4deg) translateX(-1vmin);
+  }
+  75% {
+    transform: rotate(4deg) translateX(1vmin);
+  }
+}
+@keyframes happy-pop {
+  0% {
+    transform: scale(0.8);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes pop-in {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+.mission--intro .mission__emoji {
+  animation: grow 0.5s ease-out;
+}
+@keyframes grow {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes shoot {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes fade {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes lean {
+  50% {
+    transform: rotate(3deg) translateY(-1vmin);
+  }
+}
+@keyframes recoil {
+  40% {
+    transform: translateX(-2vmin) rotate(-4deg);
+  }
+}
+@keyframes jump {
+  40% {
+    transform: translateY(-6vmin);
+  }
+}
+@keyframes wave {
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+@keyframes fall {
+  to {
+    transform: translateY(120vh) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
